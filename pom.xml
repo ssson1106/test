@@ -11,10 +11,13 @@
 	<groupId>com.example</groupId>
 	<artifactId>test</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>test</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 	</properties>
 
@@ -63,37 +66,97 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.8</version>
-				<executions>
-					<execution>
-						<id>generate-docs</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<backend>html</backend>
-							<doctype>book</doctype>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.springframework.restdocs</groupId>
-						<artifactId>spring-restdocs-asciidoctor</artifactId>
-						<version>${spring-restdocs.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
+			<plugins>
+				<plugin>
+					<groupId>org.asciidoctor</groupId>
+					<artifactId>asciidoctor-maven-plugin</artifactId>
+					<version>1.5.8</version>
+					<executions>
+						<execution>
+							<id>generate-docs</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>process-asciidoc</goal>
+							</goals>
+							<configuration>
+								<backend>html</backend>
+								<doctype>book</doctype>
+							</configuration>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>org.springframework.restdocs</groupId>
+							<artifactId>spring-restdocs-asciidoctor</artifactId>
+							<version>${spring-restdocs.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+				</plugin>
+				
+				<plugin>
+	                <groupId>com.github.eirslett</groupId>
+	                <artifactId>frontend-maven-plugin</artifactId>
+	                <version>1.10.0</version>
+	                <configuration>
+	                    <workingDirectory>frontend</workingDirectory>
+	                    <installDirectory>target</installDirectory>
+	                </configuration>
+	                <executions>
+	                    <execution>
+	                        <id>install node and npm</id>
+	                        <goals>
+	                            <goal>install-node-and-npm</goal>
+	                        </goals>
+	                        <configuration>
+	                            <nodeVersion>v12.18.0</nodeVersion>
+	                            <npmVersion>6.14.4</npmVersion>
+	                        </configuration>
+	                    </execution>
+	                    <execution>
+	                        <id>npm install</id>
+	                        <goals>
+	                            <goal>npm</goal>
+	                        </goals>
+	                        <configuration>
+	                            <arguments>install</arguments>
+	                        </configuration>
+	                    </execution>
+	                    <execution>
+	                        <id>npm run build</id>
+	                        <goals>
+	                            <goal>npm</goal>
+	                        </goals>
+	                        <configuration>
+	                            <arguments>run build</arguments>
+	                        </configuration>
+	                    </execution>
+	                </executions>
+	            </plugin>
+				
+				<plugin>
+	                <artifactId>maven-antrun-plugin</artifactId>
+	                <executions>
+	                    <execution>
+	                        <phase>generate-resources</phase>
+	                        <configuration>
+	                            <target>
+	                                <copy todir="${project.build.directory}/classes/public">
+	                                    <fileset dir="${project.basedir}/frontend/build"/>
+	                                </copy>
+	                            </target>
+	                        </configuration>
+	                        <goals>
+	                            <goal>run</goal>
+	                        </goals>
+	                    </execution>
+	                </executions>
+	            </plugin>
+				
+			</plugins>
 	</build>
 
 </project>
